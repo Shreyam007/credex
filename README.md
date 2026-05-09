@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SpendShift: AI Spend Audit Tool
 
-## Getting Started
+SpendShift is a high-conversion, production-ready web application designed to help startups and engineering teams optimize their AI tool spend. It provides instant, finance-literate audits of tools like Cursor, GitHub Copilot, Claude, and more.
 
-First, run the development server:
+## Quick Start
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1.  **Clone the repo**
+2.  **Install dependencies:** `npm install`
+3.  **Setup environment:** Copy `.env.example` to `.env.local` and fill in the keys.
+4.  **Run migrations:** Execute `schema.sql` in your Supabase SQL Editor.
+5.  **Start development:** `npm run dev`
+6.  **Run tests:** `npm run test`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Key Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Multi-step Audit Engine:** 8 proprietary rules to identify waste, redundancy, and arbitrage opportunities.
+- **AI Summary Generation:** Personalized summaries using Anthropic's Claude 3 Haiku.
+- **Lead Capture:** Seamlessly collect leads with transactional email confirmations via Resend.
+- **Shareable Reports:** Publicly accessible, SEO-optimized audit results.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Trade-off Decisions
 
-## Learn More
+1.  **Framework:** Next.js App Router for server-side metadata and optimal performance.
+2.  **Styling:** Tailwind CSS + shadcn/ui for rapid, professional component development.
+3.  **Database:** Supabase for rapid iteration with built-in RLS and service role security.
+4.  **AI Model:** Claude 3 Haiku for the perfect balance of cost-efficiency and summary quality.
+5.  **State Management:** LocalStorage for draft persistence to prevent data loss on page refresh.
 
-To learn more about Next.js, take a look at the following resources:
+## Deployed URL
+[FILL IN: Deployed Vercel URL]
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Screenshots / Demo
+[FILL IN: Loom link or screenshots]
