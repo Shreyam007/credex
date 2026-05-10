@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { ChevronRight, ChevronLeft, Loader2, CheckCircle2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 const STORAGE_KEY = 'credex_audit_draft';
 
@@ -73,7 +74,19 @@ export default function SpendForm() {
   const updateToolData = (toolId: string, field: string, value: any) => {
     setFormData(prev => ({
       ...prev,
-      tools: prev.tools.map(t => t.toolId === toolId ? { ...t, [field]: value } : t)
+      tools: prev.tools.map(t => {
+        if (t.toolId !== toolId) return t;
+        const newTool = { ...t, [field]: value };
+        
+        // Auto-recalculate spend if seats or plan changes
+        if (field === 'seats' || field === 'planId') {
+          const pricing = PRICING_DATA[toolId];
+          const plan = pricing.plans[newTool.planId];
+          newTool.currentMonthlySpend = Number((plan.monthlyPricePerSeat * newTool.seats).toFixed(2));
+        }
+        
+        return newTool;
+      })
     }));
   };
 
@@ -89,7 +102,6 @@ export default function SpendForm() {
       });
       const data = await response.json();
       if (data.auditId) {
-        // Fallback for demo: Save to localStorage in case Supabase is not configured
         localStorage.setItem(`audit_result_${data.auditId}`, JSON.stringify({
           result: data.result,
           input: formData,
@@ -109,205 +121,243 @@ export default function SpendForm() {
   const prevStep = () => setStep(s => Math.max(s - 1, 1));
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8">
-      <div className="space-y-2">
-        <div className="flex justify-between text-sm font-medium text-slate-500">
-          <span>Step {step} of 3</span>
-          <span>{Math.round((step / 3) * 100)}% Complete</span>
+    <div className="w-full space-y-10">
+      {/* Progress & Indicators */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-center gap-1.5">
+          {[1, 2, 3].map((s) => (
+            <div 
+              key={s} 
+              className={cn(
+                "transition-all duration-300 rounded-full",
+                step === s ? "w-6 h-2.5 bg-[#4F46E5]" : "w-2.5 h-2.5 bg-slate-200"
+              )}
+            />
+          ))}
         </div>
-        <Progress value={(step / 3) * 100} className="h-2" />
+        <div className="space-y-2">
+          <div className="flex justify-between items-center text-[10px] font-semibold tracking-widest text-slate-400 uppercase">
+            <span>Progress</span>
+            <span>{Math.round((step / 3) * 100)}%</span>
+          </div>
+          <div className="h-1 bg-slate-100 rounded-full w-full overflow-hidden">
+            <div 
+              className="h-1 bg-[#4F46E5] rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${(step / 3) * 100}%` }}
+            />
+          </div>
+        </div>
       </div>
 
       {step === 1 && (
-        <Card className="border-none shadow-xl bg-white/50 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold">Tell us about your team</CardTitle>
-            <CardDescription>We'll use this to benchmark your spend against similar companies.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-4">
-              <Label htmlFor="teamSize" className="text-base font-semibold">How many people are in your team?</Label>
-              <Input
+        <Card className="bg-white rounded-2xl border border-slate-100 shadow-[0_8px_32px_rgba(79,70,229,0.08)] p-8 sm:p-10">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-slate-900 mb-1">Team Profile</h2>
+            <p className="text-sm text-slate-400">We'll use this to benchmark your spend against similar companies.</p>
+          </div>
+          <div className="space-y-8">
+            <div className="space-y-2">
+              <label htmlFor="teamSize" className="block text-sm font-semibold text-slate-700">Team Size</label>
+              <input
                 id="teamSize"
                 type="number"
                 min={1}
                 max={500}
                 value={formData.teamSize}
                 onChange={(e) => setFormData({ ...formData, teamSize: parseInt(e.target.value) || 1 })}
-                className="text-lg h-12"
+                className="w-full h-11 px-4 border border-slate-200 rounded-lg text-base text-slate-900 focus:ring-2 focus:ring-[#4F46E5] focus:border-[#4F46E5] outline-none transition-all"
               />
             </div>
             <div className="space-y-4">
-              <Label className="text-base font-semibold">What is your primary AI use case?</Label>
-              <RadioGroup
-                value={formData.primaryUseCase}
-                onValueChange={(v: any) => setFormData({ ...formData, primaryUseCase: v })}
-                className="grid grid-cols-1 md:grid-cols-2 gap-4"
-              >
-                {['coding', 'writing', 'data', 'research', 'mixed'].map((useCase) => (
-                  <Label
+              <label className="block text-sm font-semibold text-slate-700">Primary AI Use Case</label>
+              <div className="grid grid-cols-2 gap-3">
+                {['coding', 'writing', 'data', 'research'].map((useCase) => (
+                  <label 
                     key={useCase}
-                    className={`flex items-center space-x-3 p-4 rounded-xl border-2 cursor-pointer transition-all hover:bg-slate-50 ${
-                      formData.primaryUseCase === useCase ? 'border-indigo-600 bg-indigo-50/50' : 'border-slate-200'
-                    }`}
+                    className={cn(
+                      "flex items-center gap-3 px-4 py-3.5 border border-slate-200 rounded-xl cursor-pointer transition-all duration-150 hover:border-[#4F46E5] hover:bg-indigo-50/50",
+                      formData.primaryUseCase === useCase ? "border-[#4F46E5] bg-indigo-50 shadow-[0_0_0_1px_#4F46E5]" : ""
+                    )}
                   >
-                    <RadioGroupItem value={useCase} id={useCase} />
-                    <span className="capitalize text-sm font-medium">{useCase}</span>
-                  </Label>
+                    <input 
+                      type="radio" 
+                      name="useCase"
+                      className="w-4 h-4 accent-[#4F46E5] flex-shrink-0"
+                      checked={formData.primaryUseCase === useCase}
+                      onChange={() => setFormData(prev => ({ ...prev, primaryUseCase: useCase as any }))}
+                    />
+                    <span className="text-sm font-medium text-slate-700 leading-none capitalize">{useCase}</span>
+                  </label>
                 ))}
-              </RadioGroup>
+                <label 
+                  className={cn(
+                    "col-span-2 flex items-center gap-3 px-4 py-3.5 border border-slate-200 rounded-xl cursor-pointer transition-all duration-150 hover:border-[#4F46E5] hover:bg-indigo-50/50",
+                    formData.primaryUseCase === 'mixed' ? "border-[#4F46E5] bg-indigo-50 shadow-[0_0_0_1px_#4F46E5]" : ""
+                  )}
+                >
+                  <input 
+                    type="radio" 
+                    name="useCase"
+                    className="w-4 h-4 accent-[#4F46E5] flex-shrink-0"
+                    checked={formData.primaryUseCase === 'mixed'}
+                    onChange={() => setFormData(prev => ({ ...prev, primaryUseCase: 'mixed' }))}
+                  />
+                  <span className="text-sm font-medium text-slate-700 leading-none capitalize">Mixed Use / General</span>
+                </label>
+              </div>
             </div>
-            <Button onClick={nextStep} className="w-full h-12 text-lg bg-indigo-600 hover:bg-indigo-700">
-              Continue <ChevronRight className="ml-2 h-5 w-5" />
-            </Button>
-          </CardContent>
+            <button 
+              onClick={nextStep} 
+              className="w-full h-12 bg-[#4F46E5] hover:bg-[#4338CA] text-white font-semibold text-base rounded-xl btn-hover flex items-center justify-center gap-2 mt-6 shadow-[0_4px_12px_rgba(79,70,229,0.3)]"
+            >
+              Continue <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </Card>
       )}
 
       {step === 2 && (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {Object.values(PRICING_DATA).map((tool) => (
-              <Card 
+              <div 
                 key={tool.toolId}
-                className={`cursor-pointer transition-all border-2 ${
-                  formData.selectedTools.includes(tool.toolId) ? 'border-indigo-600 ring-2 ring-indigo-100' : 'border-slate-200'
-                }`}
+                className={cn(
+                  "p-4 rounded-xl border transition-all cursor-pointer flex items-center space-x-3",
+                  formData.selectedTools.includes(tool.toolId) 
+                    ? "border-[#4F46E5] bg-indigo-50 shadow-[0_0_0_1px_#4F46E5]" 
+                    : "border-slate-200 bg-white hover:border-[#4F46E5]"
+                )}
                 onClick={() => handleToolToggle(tool.toolId)}
               >
-                <CardHeader className="p-4 flex flex-row items-center space-x-3 space-y-0">
-                  <Checkbox 
-                    checked={formData.selectedTools.includes(tool.toolId)}
-                    onCheckedChange={() => handleToolToggle(tool.toolId)}
-                  />
-                  <CardTitle className="text-lg">{tool.toolName}</CardTitle>
-                </CardHeader>
-              </Card>
+                <Checkbox 
+                  checked={formData.selectedTools.includes(tool.toolId)}
+                  onCheckedChange={() => handleToolToggle(tool.toolId)}
+                  className="accent-[#4F46E5]"
+                />
+                <span className="text-sm font-semibold text-slate-700">{tool.toolName}</span>
+              </div>
             ))}
           </div>
 
-          {formData.tools.map((t) => {
-            const pricing = PRICING_DATA[t.toolId];
-            return (
-              <Card key={t.toolId} className="border-slate-200">
-                <CardHeader className="bg-slate-50/50">
-                  <CardTitle className="text-lg flex items-center">
-                    <CheckCircle2 className="mr-2 h-5 w-5 text-indigo-600" />
-                    Configure {pricing.toolName}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="space-y-2">
-                    <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Plan</Label>
-                    <Select
-                      value={t.planId}
-                      onValueChange={(v) => {
-                        const newPlan = pricing.plans[v];
-                        updateToolData(t.toolId, 'planId', v);
-                        updateToolData(t.toolId, 'currentMonthlySpend', newPlan.monthlyPricePerSeat * t.seats);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Object.entries(pricing.plans).map(([id, p]) => (
-                          <SelectItem key={id} value={id}>
-                            {p.planName} (${p.monthlyPricePerSeat}/mo)
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+          <div className="space-y-4">
+            {formData.tools.map((t) => {
+              const pricing = PRICING_DATA[t.toolId];
+              return (
+                <div key={t.toolId} className="p-6 rounded-2xl bg-white border border-slate-100 shadow-sm space-y-6">
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#4F46E5]" />
+                    <h3 className="font-bold text-slate-900 text-base">Configure {pricing.toolName}</h3>
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Seats</Label>
-                    <Input
-                      type="number"
-                      value={t.seats}
-                      onChange={(e) => updateToolData(t.toolId, 'seats', parseInt(e.target.value) || 0)}
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="space-y-2 min-w-0">
+                      <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 h-4 flex items-center">Plan</Label>
+                      <Select
+                        value={t.planId}
+                        onValueChange={(v) => updateToolData(t.toolId, 'planId', v)}
+                      >
+                        <SelectTrigger className="h-10 border-slate-200 focus:ring-2 focus:ring-[#4F46E5] w-full truncate">
+                          <SelectValue className="truncate" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Object.entries(pricing.plans).map(([id, p]) => (
+                            <SelectItem key={id} value={id}>
+                              {p.planName} (${p.monthlyPricePerSeat})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2 min-w-0">
+                      <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 h-4 flex items-center">Seats</Label>
+                      <Input
+                        type="number"
+                        value={t.seats}
+                        onChange={(e) => updateToolData(t.toolId, 'seats', parseInt(e.target.value) || 0)}
+                        className="h-10 border-slate-200 focus:ring-2 focus:ring-[#4F46E5]"
+                      />
+                    </div>
+                    <div className="space-y-2 min-w-0">
+                      <Label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 h-4 flex items-center whitespace-nowrap">Monthly Spend ($)</Label>
+                      <Input
+                        type="number"
+                        value={t.currentMonthlySpend}
+                        onChange={(e) => updateToolData(t.toolId, 'currentMonthlySpend', parseInt(e.target.value) || 0)}
+                        className="h-10 border-slate-200 focus:ring-2 focus:ring-[#4F46E5]"
+                      />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Current Monthly Spend ($)</Label>
-                    <Input
-                      type="number"
-                      value={t.currentMonthlySpend}
-                      onChange={(e) => updateToolData(t.toolId, 'currentMonthlySpend', parseInt(e.target.value) || 0)}
-                    />
-                    <p className="text-[10px] text-slate-400">List price: ${pricing.plans[t.planId].monthlyPricePerSeat}/seat</p>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+                </div>
+              );
+            })}
+          </div>
 
-          <div className="flex space-x-4">
-            <Button variant="outline" onClick={prevStep} className="flex-1 h-12">
-              <ChevronLeft className="mr-2 h-5 w-5" /> Back
-            </Button>
-            <Button 
+          <div className="flex gap-4 pt-4">
+            <button onClick={prevStep} className="flex-1 h-12 border border-slate-200 rounded-xl font-semibold text-slate-600 btn-hover flex items-center justify-center gap-2">
+              <ChevronLeft className="w-4 h-4" /> Back
+            </button>
+            <button 
               onClick={nextStep} 
               disabled={formData.tools.length === 0}
-              className="flex-[2] h-12 bg-indigo-600 hover:bg-indigo-700"
+              className="flex-[2] h-12 bg-[#4F46E5] hover:bg-[#4338CA] text-white font-semibold rounded-xl btn-hover flex items-center justify-center gap-2 shadow-[0_4px_12px_rgba(79,70,229,0.3)] disabled:opacity-50"
             >
-              Review Audit <ChevronRight className="ml-2 h-5 w-5" />
-            </Button>
+              Review Audit <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
       )}
 
       {step === 3 && (
-        <Card className="border-none shadow-xl bg-white/50 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold">Review your inputs</CardTitle>
-            <CardDescription>Verify everything is correct before we run the engine.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-2 gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Team Size</p>
-                <p className="text-lg font-semibold">{formData.teamSize}</p>
+        <Card className="bg-white rounded-2xl border border-slate-100 shadow-[0_8px_32px_rgba(79,70,229,0.08)] p-8 sm:p-10">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-slate-900 mb-1">Final Review</h2>
+            <p className="text-sm text-slate-400">Verify everything is correct before we run the engine.</p>
+          </div>
+          <div className="space-y-8">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 text-center">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Team Size</p>
+                <p className="text-xl font-bold text-slate-900">{formData.teamSize}</p>
               </div>
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Use Case</p>
-                <p className="text-lg font-semibold capitalize">{formData.primaryUseCase}</p>
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 text-center">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Use Case</p>
+                <p className="text-xl font-bold text-[#4F46E5] capitalize">{formData.primaryUseCase}</p>
               </div>
             </div>
 
             <div className="space-y-3">
-              <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">Tool Summary</p>
               {formData.tools.map(t => (
-                <div key={t.toolId} className="flex justify-between items-center p-3 rounded-lg border border-slate-100 bg-white">
+                <div key={t.toolId} className="flex justify-between items-center p-4 rounded-xl border border-slate-100 bg-white">
                   <div>
-                    <p className="font-semibold">{PRICING_DATA[t.toolId].toolName}</p>
-                    <p className="text-xs text-slate-500">{t.seats} seats on {PRICING_DATA[t.toolId].plans[t.planId].planName}</p>
+                    <p className="font-bold text-slate-900 text-sm">{PRICING_DATA[t.toolId].toolName}</p>
+                    <p className="text-xs font-medium text-slate-500">{t.seats} seats · {PRICING_DATA[t.toolId].plans[t.planId].planName}</p>
                   </div>
-                  <p className="font-mono font-bold">${t.currentMonthlySpend}/mo</p>
+                  <p className="text-base font-bold text-slate-900">${t.currentMonthlySpend}</p>
                 </div>
               ))}
-              <div className="flex justify-between items-center p-4 rounded-xl bg-indigo-600 text-white shadow-lg">
-                <span className="font-bold">Total Monthly Spend</span>
-                <span className="text-2xl font-black">${formData.tools.reduce((acc, t) => acc + t.currentMonthlySpend, 0)}</span>
+              <div className="flex justify-between items-center p-6 rounded-2xl bg-slate-900 text-white shadow-xl mt-6">
+                <span className="font-semibold text-slate-400 text-sm">Total Monthly Spend</span>
+                <span className="text-2xl font-bold">${formData.tools.reduce((acc, t) => acc + t.currentMonthlySpend, 0)}</span>
               </div>
             </div>
 
-            <div className="flex space-x-4">
-              <Button variant="outline" onClick={prevStep} className="flex-1 h-12" disabled={isSubmitting}>
-                <ChevronLeft className="mr-2 h-5 w-5" /> Back
-              </Button>
-              <Button 
+            <div className="flex gap-4 pt-6">
+              <button onClick={prevStep} className="flex-1 h-12 border border-slate-200 rounded-xl font-semibold text-slate-600 btn-hover flex items-center justify-center gap-2" disabled={isSubmitting}>
+                <ChevronLeft className="w-4 h-4" /> Back
+              </button>
+              <button 
                 onClick={handleSubmit} 
                 disabled={isSubmitting}
-                className="flex-[2] h-12 bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200 shadow-lg"
+                className="flex-[2] h-12 bg-[#4F46E5] hover:bg-[#4338CA] text-white font-semibold rounded-xl btn-hover flex items-center justify-center gap-2 shadow-[0_4px_12px_rgba(79,70,229,0.3)]"
               >
                 {isSubmitting ? (
-                  <>Running Audit <Loader2 className="ml-2 h-5 w-5 animate-spin" /></>
+                  <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
-                  <>Run My Audit <ChevronRight className="ml-2 h-5 w-5" /></>
+                  <>Run My Audit <ChevronRight className="w-4 h-4" /></>
                 )}
-              </Button>
+              </button>
             </div>
-          </CardContent>
+          </div>
         </Card>
       )}
     </div>

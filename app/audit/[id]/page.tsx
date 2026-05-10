@@ -2,11 +2,14 @@ import { supabaseAdmin } from '@/lib/supabase';
 import SummaryBlock from '@/components/SummaryBlock';
 import AuditResult from '@/components/AuditResult';
 import LeadCapture from '@/components/LeadCapture';
+import BenchmarkCard from '@/components/BenchmarkCard';
 import ShareBar from '@/components/ShareBar';
 import { Badge } from '@/components/ui/badge';
-import { Zap, ArrowRight } from 'lucide-react';
 import { Metadata } from 'next';
-import { AuditRecovery } from '@/components/AuditRecovery';
+import { notFound } from 'next/navigation';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import { ArrowRight } from 'lucide-react';
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -21,114 +24,162 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       .eq('id', id)
       .single();
 
-    const savings = audit?.result_json?.totalMonthlySavings || 0;
+    if (!audit) return { title: 'Audit Not Found | SpendShift' };
+
+    const savings = audit.result_json.totalMonthlySavings || 0;
+    const toolCount = audit.result_json.perTool.length;
 
     return {
-      title: `I could save $${savings}/month on AI tools — see my audit`,
-      description: "Free AI spend audit by SpendShift. Check yours.",
+      title: `AI Spend Audit — $${savings}/mo savings found`,
+      description: `SpendShift audited ${toolCount} AI tools and found $${savings}/month in potential savings. Run your free audit.`,
+      openGraph: {
+        title: `I could save $${savings}/month on AI tools`,
+        description: `Free AI spend audit by SpendShift. See where your team overpays.`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/audit/${id}`,
+        siteName: 'SpendShift',
+        type: 'website',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `AI Spend Audit — $${savings}/mo savings`,
+        description: 'Free AI tool spend audit. No login required.',
+      },
     };
   } catch (e) {
-    return {
-      title: "AI Spend Audit Results | SpendShift",
-    };
+    return { title: "AI Spend Audit Results | SpendShift" };
   }
 }
 
 export default async function AuditPage({ params }: Props) {
   const { id } = await params;
+  
   const { data: audit, error } = await supabaseAdmin
     .from('audits')
-    .select('*')
+    .select('id, result_json, created_at, input_json')
     .eq('id', id)
     .single();
 
   if (error || !audit) {
-    // If not found in DB, fallback to client-side recovery from localStorage
-    return <AuditRecovery id={id} />;
+    notFound();
   }
 
   const result = audit.result_json;
   const input = audit.input_json;
+  const isOptimal = result.savingsTier === 'optimal' || result.totalMonthlySavings < 100;
 
   return (
-    <main className="min-h-screen bg-slate-50/50 pb-32">
-      {/* Header */}
-      <div className="bg-white border-b border-slate-100">
-        <div className="max-w-4xl mx-auto px-6 py-6 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <Zap className="text-indigo-600 w-6 h-6 fill-indigo-600" />
-            <span className="text-xl font-black tracking-tighter text-slate-900">SpendShift</span>
-          </div>
-          <Badge variant="outline" className="text-slate-500 font-medium">
-            Audit ID: {id.slice(0, 8)}
-          </Badge>
-        </div>
+    <main className="min-h-screen bg-white pb-32">
+      <div className="no-print">
+        <Navbar />
       </div>
 
       <div className="max-w-4xl mx-auto px-6 py-12 space-y-12">
-        {/* Hero Section */}
-        <section className="text-center space-y-4">
-          {result.savingsTier === 'optimal' ? (
-            <div className="space-y-2">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Zap className="text-green-600 w-8 h-8 fill-green-600" />
-              </div>
-              <h1 className="text-4xl font-black text-slate-900">Your stack is well-optimized ✓</h1>
-              <p className="text-slate-500 text-lg">Great job! You're getting maximum value for your AI spend.</p>
+        
+        {/* SECTION A: HERO SAVINGS BLOCK */}
+        {!isOptimal ? (
+          <div className="text-center py-16 bg-gradient-to-b from-indigo-50 to-white rounded-3xl mb-8">
+            <p className="text-xs font-semibold tracking-widest text-indigo-400 uppercase">
+              YOUR MONTHLY SAVINGS POTENTIAL
+            </p>
+            <h1 className="text-7xl font-extrabold text-[#4F46E5] tracking-tight mt-4">
+              ${result.totalMonthlySavings.toLocaleString()} / month
+            </h1>
+            <p className="text-xl text-slate-500 font-medium mt-2">
+              That's ${result.totalAnnualSavings.toLocaleString()} saved every year
+            </p>
+            
+            <div className="flex justify-center mt-6">
+              {result.totalMonthlySavings > 2000 ? (
+                <span className="bg-red-500 text-white rounded-full px-4 py-1 text-sm font-semibold">
+                  🔥 High Savings Opportunity
+                </span>
+              ) : result.totalMonthlySavings > 500 ? (
+                <span className="bg-orange-500 text-white rounded-full px-4 py-1 text-sm font-semibold">
+                  ⚡ Significant Savings Found
+                </span>
+              ) : (
+                <span className="bg-yellow-400 text-slate-900 rounded-full px-4 py-1 text-sm font-semibold">
+                  💡 Moderate Savings Found
+                </span>
+              )}
             </div>
-          ) : (
-            <div className="space-y-2">
-              <p className="text-sm font-bold text-indigo-600 uppercase tracking-widest">Potential Savings Found</p>
-              <h1 className="text-7xl font-black text-slate-900 tracking-tighter">
-                <span className="text-green-600">${result.totalMonthlySavings}</span>
-                <span className="text-slate-300 text-3xl font-bold ml-4">/mo</span>
-              </h1>
-              <p className="text-slate-500 text-xl font-medium">
-                That's ${result.totalAnnualSavings.toLocaleString()} in annual savings.
-              </p>
-            </div>
-          )}
-        </section>
+          </div>
+        ) : (
+          <div className="text-center py-16 bg-gradient-to-b from-green-50 to-white rounded-3xl mb-8">
+            <div className="text-6xl text-green-600 mb-4 font-bold">✓</div>
+            <h1 className="text-4xl font-extrabold text-slate-900">You're Spending Well</h1>
+            <p className="text-lg text-slate-500 max-w-md mx-auto mt-3 font-medium">
+              Your AI stack is well-optimized for your team size and use case. We'll alert you when better options appear for your specific setup.
+            </p>
+          </div>
+        )}
 
-        {/* AI Summary Block */}
+        {/* BONUS: BENCHMARK MODE */}
+        <BenchmarkCard 
+          totalMonthlySpend={result.perTool.reduce((acc: number, t: any) => acc + t.currentMonthlySpend, 0)}
+          teamSize={input.teamSize}
+        />
+
+        {/* SECTION B: AI SUMMARY BLOCK */}
         <SummaryBlock 
           auditResult={result} 
           teamSize={input.teamSize} 
           primaryUseCase={input.primaryUseCase} 
         />
 
-        {/* Breakdown */}
+        {/* SECTION C: PER-TOOL BREAKDOWN */}
         <AuditResult result={result} />
 
-        {/* Credex CTA */}
-        {result.showCredexCTA && (
-          <div className="p-8 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-700 text-white shadow-2xl shadow-indigo-200 space-y-6">
-            <div className="space-y-2">
-              <Badge className="bg-white/20 hover:bg-white/30 border-none text-white text-[10px] font-bold uppercase tracking-widest">
-                Credex Special Opportunity
-              </Badge>
-              <h2 className="text-3xl font-black">Ready to capture these savings?</h2>
-              <p className="text-indigo-100 text-lg">
-                Credex sources discounted AI credits from companies that over-forecasted. 
-                We can likely reduce your spend by an additional 15-20% on top of these recommendations.
-              </p>
+        {/* SECTION D: CREDEX CTA */}
+        {!isOptimal && result.totalMonthlySavings > 500 && (
+          <div className="bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] rounded-2xl p-8 text-white my-8 shadow-xl no-print">
+            <p className="text-xs font-semibold tracking-widest text-indigo-200 uppercase">
+              MAXIMIZE YOUR SAVINGS
+            </p>
+            <h2 className="text-3xl font-extrabold mt-2">
+              Get an Additional 20–40% Off These Tools
+            </h2>
+            <p className="text-indigo-100 text-base mt-2 max-w-lg leading-relaxed font-medium">
+              Credex sources discounted AI infrastructure credits from companies that over-forecasted. 
+              We've identified ${result.totalMonthlySavings}/month in optimization savings — 
+              Credex can layer an additional discount on top of that.
+            </p>
+            
+            <div className="flex flex-wrap gap-8 mt-6">
+              <div className="space-y-1">
+                <p className="text-xs font-bold text-indigo-300 uppercase tracking-widest">Avg additional discount</p>
+                <p className="text-xl font-bold">20-40%</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs font-bold text-indigo-300 uppercase tracking-widest">Time to activate</p>
+                <p className="text-xl font-bold">&lt;24hrs</p>
+              </div>
             </div>
-            <button className="w-full md:w-auto px-8 py-4 bg-white text-indigo-600 font-black rounded-xl text-lg hover:bg-indigo-50 transition-colors flex items-center justify-center gap-2">
-              Book a Free Procurement Call <ArrowRight className="w-5 h-5" />
+
+            <button className="bg-white text-[#4F46E5] font-bold px-8 py-4 rounded-xl hover:bg-indigo-50 transition mt-8 flex items-center gap-2 btn-hover">
+              Book a Free 20-Min Audit Call <ArrowRight className="w-5 h-5" />
             </button>
           </div>
         )}
 
-        {/* Lead Capture */}
-        <LeadCapture 
-          auditId={id} 
-          savingsTier={result.savingsTier} 
-          totalMonthlySavings={result.totalMonthlySavings} 
-        />
+        {/* SECTION E: LEAD CAPTURE */}
+        <div className="no-print">
+          <LeadCapture 
+            auditId={id} 
+            savingsTier={result.savingsTier} 
+            totalMonthlySavings={result.totalMonthlySavings} 
+          />
+        </div>
       </div>
 
-      {/* Share Bar */}
-      <ShareBar auditId={id} />
+      {/* SECTION F: SHARE BAR */}
+      <div className="no-print">
+        <ShareBar auditId={id} totalMonthlySavings={result.totalMonthlySavings} />
+      </div>
+
+      <div className="no-print">
+        <Footer />
+      </div>
     </main>
   );
 }

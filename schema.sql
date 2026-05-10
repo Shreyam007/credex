@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS leads (
   team_size INTEGER,
   savings_tier TEXT,
   total_monthly_savings NUMERIC,
+  referral_code TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 

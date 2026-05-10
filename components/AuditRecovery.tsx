@@ -8,6 +8,8 @@ import ShareBar from '@/components/ShareBar';
 import { Badge } from '@/components/ui/badge';
 import { Zap, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import Link from 'next/link';
+import Footer from '@/components/Footer';
 
 export function AuditRecovery({ id }: { id: string }) {
   const [data, setData] = useState<any>(null);
@@ -52,6 +54,19 @@ export function AuditRecovery({ id }: { id: string }) {
 
   return (
     <main className="min-h-screen bg-slate-50/50 pb-32">
+      {/* Header */}
+      <div className="bg-white border-b border-slate-100">
+        <div className="max-w-4xl mx-auto px-6 py-6 flex justify-between items-center">
+          <Link href="/" className="flex items-center space-x-2 group">
+            <Zap className="text-[#4F46E5] w-6 h-6 fill-[#4F46E5] transition-transform duration-300 group-hover:scale-110" />
+            <span className="text-xl font-bold tracking-tighter text-slate-900">SpendShift</span>
+          </Link>
+          <Badge variant="outline" className="text-slate-500 font-medium">
+            Audit ID: {id.slice(0, 8)}
+          </Badge>
+        </div>
+      </div>
+
       {/* Demo Mode Alert */}
       <div className="max-w-4xl mx-auto px-6 pt-6">
         <Alert className="bg-amber-50 border-amber-200 text-amber-800">
@@ -104,7 +119,8 @@ export function AuditRecovery({ id }: { id: string }) {
           totalMonthlySavings={result.totalMonthlySavings} 
         />
       </div>
-      <ShareBar auditId={id} />
+      <ShareBar auditId={id} totalMonthlySavings={result.totalMonthlySavings} />
+      <Footer />
     </main>
   );
 }

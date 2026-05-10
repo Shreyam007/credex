@@ -11,13 +11,39 @@ export default function SummaryBlock({ auditResult, teamSize, primaryUseCase }: 
   useEffect(() => {
     async function fetchSummary() {
       try {
+        const totalSpend = auditResult.perTool.reduce((acc: number, t: any) => acc + t.currentMonthlySpend, 0);
+        
         const res = await fetch('/api/summary', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ auditResult, teamSize, primaryUseCase }),
+          body: JSON.stringify({ 
+            auditResult, 
+            teamSize, 
+            primaryUseCase,
+            totalMonthlySpend: totalSpend,
+            totalMonthlySavings: auditResult.totalMonthlySavings,
+            perTool: auditResult.perTool
+          }),
         });
         const data = await res.json();
-        setSummary(data.summary || data.message);
+        
+        if (data.summary) {
+          setSummary(data.summary);
+        } else {
+          // Fallback template
+          const toolCount = auditResult.perTool.length;
+          const topRec = auditResult.perTool[0]?.recommendedAction || 'optimizing plans';
+          const annualSavings = auditResult.totalAnnualSavings;
+          
+          let fallback = `Your team of ${teamSize} is spending $${totalSpend}/month across ${toolCount} AI tools. Our audit identified $${auditResult.totalMonthlySavings}/month in optimization opportunities, primarily through ${topRec}. `;
+          
+          if (auditResult.totalMonthlySavings > 0) {
+            fallback += `Capturing these savings could return $${annualSavings} to your budget annually.`;
+          } else {
+            fallback += `Your current stack reflects strong procurement discipline — continue monitoring as vendor pricing evolves.`;
+          }
+          setSummary(fallback);
+        }
       } catch (e) {
         setSummary("Your audit is ready. Review the breakdown below for specific optimization opportunities.");
       } finally {
@@ -28,24 +54,23 @@ export default function SummaryBlock({ auditResult, teamSize, primaryUseCase }: 
   }, [auditResult, teamSize, primaryUseCase]);
 
   return (
-    <Card className="border-indigo-100 bg-indigo-50/30 overflow-hidden relative">
-      <div className="absolute top-0 right-0 p-4 opacity-10">
-        <Sparkles className="w-12 h-12 text-indigo-600" />
-      </div>
-      <CardContent className="p-8 space-y-4">
-        <div className="flex items-center space-x-2 text-indigo-600 font-bold text-sm uppercase tracking-widest">
-          <Sparkles className="w-4 h-4" />
-          <span>AI Audit Summary</span>
+    <Card className="border-indigo-100 bg-indigo-50/40 rounded-xl overflow-hidden border-l-4 border-[#4F46E5] shadow-sm">
+      <CardContent className="p-6 space-y-3">
+        <div className="flex items-center space-x-2 text-[#4F46E5] font-bold text-[10px] uppercase tracking-widest">
+          <Sparkles className="w-3 h-3" />
+          <span>AI ANALYSIS</span>
         </div>
+        
         {loading ? (
           <div className="space-y-3">
-            <div className="h-4 bg-indigo-100 rounded animate-pulse w-full"></div>
-            <div className="h-4 bg-indigo-100 rounded animate-pulse w-5/6"></div>
-            <div className="h-4 bg-indigo-100 rounded animate-pulse w-4/6"></div>
+            <p className="text-xs font-semibold text-indigo-400 animate-pulse">Generating your personalized analysis...</p>
+            <div className="h-3 bg-indigo-100 rounded animate-pulse w-full"></div>
+            <div className="h-3 bg-indigo-100 rounded animate-pulse w-5/6"></div>
+            <div className="h-3 bg-indigo-100 rounded animate-pulse w-4/6"></div>
           </div>
         ) : (
-          <p className="text-slate-700 leading-relaxed text-lg italic font-medium">
-            "{summary}"
+          <p className="text-base text-slate-700 leading-relaxed font-medium">
+            {summary}
           </p>
         )}
       </CardContent>

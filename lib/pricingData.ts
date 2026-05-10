@@ -146,12 +146,28 @@ export const PRICING_DATA: Record<string, ToolPricing> = {
     toolId: 'anthropic_api',
     toolName: 'Anthropic API',
     plans: {
-      pay_as_you_go: {
-        planName: 'Pay-as-you-go',
-        monthlyPricePerSeat: 0, // variable
+      build: {
+        planName: 'Build Tier',
+        monthlyPricePerSeat: 0,
         annualPricePerSeat: 0,
         minSeats: 1,
-        features: ['Claude 3.5 Sonnet: $3/1M in, $15/1M out', 'Claude 3 Haiku: $0.25/1M in, $1.25/1M out'],
+        features: ['Standard rate limits', 'Claude 3.5 Sonnet access'],
+        useCaseFit: ['coding', 'writing', 'data', 'research'],
+      },
+      scale: {
+        planName: 'Scale Tier',
+        monthlyPricePerSeat: 0,
+        annualPricePerSeat: 0,
+        minSeats: 1,
+        features: ['Higher rate limits', 'Priority support', 'Dedicated throughput'],
+        useCaseFit: ['coding', 'writing', 'data', 'research'],
+      },
+      enterprise: {
+        planName: 'Enterprise',
+        monthlyPricePerSeat: 0,
+        annualPricePerSeat: 0,
+        minSeats: 1,
+        features: ['Custom rate limits', 'Direct support engineers', 'SLA guarantees'],
         useCaseFit: ['coding', 'writing', 'data', 'research'],
       },
     },
@@ -160,12 +176,20 @@ export const PRICING_DATA: Record<string, ToolPricing> = {
     toolId: 'openai_api',
     toolName: 'OpenAI API',
     plans: {
-      pay_as_you_go: {
-        planName: 'Pay-as-you-go',
-        monthlyPricePerSeat: 0, // variable
+      usage_tier_1: {
+        planName: 'Usage Tier 1',
+        monthlyPricePerSeat: 0,
         annualPricePerSeat: 0,
         minSeats: 1,
-        features: ['GPT-4o: $5/1M in, $15/1M out', 'GPT-4o-mini: $0.15/1M in, $0.6/1M out'],
+        features: ['GPT-4o access', 'Standard rate limits'],
+        useCaseFit: ['coding', 'writing', 'data', 'research'],
+      },
+      usage_tier_5: {
+        planName: 'Usage Tier 5',
+        monthlyPricePerSeat: 0,
+        annualPricePerSeat: 0,
+        minSeats: 1,
+        features: ['Highest rate limits', 'Enterprise security'],
         useCaseFit: ['coding', 'writing', 'data', 'research'],
       },
     },
