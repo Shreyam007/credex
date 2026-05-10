@@ -31,5 +31,5 @@ graph TD
 
 - **Edge Caching:** Cache audit results at the edge using Vercel's ISR or Cache-Control headers.
 - **Connection Pooling:** Utilize Supabase's built-in connection pooling for high-concurrency DB access.
-- **Rate Limiting:** Transition from in-memory Map to Redis (Upstash) for distributed rate limiting.
+- **Rate Limiting:** Transition from in-memory Map to Redis (Upstash) for distributed rate limiting. This ensures limits are maintained across multiple edge instances.
 - **Background Jobs:** Move email sending to a background worker if Resend latency becomes a bottleneck.
