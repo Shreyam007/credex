@@ -11,6 +11,13 @@
 - Audit My AI Spend →
 - Run Free Audit →
 
+## Social Proof
+- "SpendShift found $400/mo in duplicates we didn't even know we had." — *VP Eng @ Seed Fintech*
+- "The benchmark card alone convinced my CEO to upgrade our stack correctly." — *CTO @ Series B SaaS*
+- "Finally, an audit that doesn't require connecting a bank account." — *Founder @ Stealth AI*
+- [Labeled as MOCKED for assignment purposes]
+
+
 ## FAQ
 1. **How is this free?** We help companies identify savings, and for larger teams, we offer a paid procurement service via Credex.
 2. **Is my data secure?** We don't ask for logins. You manually enter seat counts and plans. We are SOC2 and GDPR compliant.

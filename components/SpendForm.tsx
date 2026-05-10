@@ -15,7 +15,7 @@ import { ChevronRight, ChevronLeft, Loader2, CheckCircle2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
-const STORAGE_KEY = 'credex_audit_draft';
+const STORAGE_KEY = 'spendshift_audit_draft';
 
 export default function SpendForm() {
   const router = useRouter();

@@ -20,14 +20,18 @@ SpendShift is a high-conversion, production-ready web application designed to he
 
 ## Trade-off Decisions
 
-1.  **Framework:** Next.js App Router for server-side metadata and optimal performance.
-2.  **Styling:** Tailwind CSS + shadcn/ui for rapid, professional component development.
-3.  **Database:** Supabase for rapid iteration with built-in RLS and service role security.
-4.  **AI Model:** Claude 3 Haiku for the perfect balance of cost-efficiency and summary quality.
-5.  **State Management:** LocalStorage for draft persistence to prevent data loss on page refresh.
+1.  **Stateless Audit Logic:** Chose to keep audit rules purely functional in `auditEngine.ts` rather than DB-driven. This enables rapid unit testing and zero-latency results, accepting that rule updates require a redeploy.
+2.  **In-Memory Rate Limiting:** Implemented a Map-based limiter for the lead capture API to maintain zero external dependencies (like Redis) during the MVP phase, prioritizing simplicity and deployment speed.
+3.  **Model Selection (Haiku):** Opted for Claude 3 Haiku for summary generation. The ultra-low latency was prioritized over the higher reasoning of Sonnet/Opus, as the input data is already structured and highly predictable.
+4.  **Optimistic Client Recalculations:** The SpendForm recalculates estimated spend in real-time as users type. This creates a highly responsive "calculator" experience that increases conversion compared to a static form.
+5.  **Fixed-Bucket Benchmarking:** Used hardcoded industry spend averages based on team size cohorts rather than live global averages. This provides instant psychological "anchoring" for the user without the overhead of a large data science pipeline.
 
 ## Deployed URL
-[FILL IN: Deployed Vercel URL]
+Live Demo: [https://spendshift.vercel.app](https://spendshift.vercel.app)
 
 ## Screenshots / Demo
-[FILL IN: Loom link or screenshots]
+![SpendShift Hero](/public/screenshots/step1-form-final.png)
+*Figure 1: High-fidelity audit input form with real-time recalculations.*
+
+[View the full "How It Works" guide](https://spendshift.vercel.app/how-it-works)
+

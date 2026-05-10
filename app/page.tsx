@@ -15,14 +15,14 @@ export default function Home() {
             Free AI Audit Tool
           </div>
           
-          <div className="space-y-2">
+          <h1 className="space-y-2">
             <div className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-[-0.03em] leading-[1.05] text-[#0F172A]">
               Stop Guessing.
             </div>
             <div className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-[-0.03em] leading-[1.05] text-[#4F46E5]">
               Start Saving.
             </div>
-          </div>
+          </h1>
 
           <p className="text-lg text-slate-500 font-normal leading-[1.7] max-w-lg mx-auto">
             The average team overpays by 24% for AI seats. Get an instant, 

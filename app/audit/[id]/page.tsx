@@ -91,15 +91,15 @@ export default async function AuditPage({ params }: Props) {
             <div className="flex justify-center mt-6">
               {result.totalMonthlySavings > 2000 ? (
                 <span className="bg-red-500 text-white rounded-full px-4 py-1 text-sm font-semibold">
-                  🔥 High Savings Opportunity
+                  High Savings Opportunity
                 </span>
               ) : result.totalMonthlySavings > 500 ? (
                 <span className="bg-orange-500 text-white rounded-full px-4 py-1 text-sm font-semibold">
-                  ⚡ Significant Savings Found
+                  Significant Savings Found
                 </span>
               ) : (
                 <span className="bg-yellow-400 text-slate-900 rounded-full px-4 py-1 text-sm font-semibold">
-                  💡 Moderate Savings Found
+                  Moderate Savings Found
                 </span>
               )}
             </div>
