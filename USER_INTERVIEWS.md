@@ -1,6 +1,6 @@
 # User Interviews
 
-## Interview 1 — Manik G., CS Final Year Student, Freelancer
+## Interview 1 — Manik S., CS Final Year Student, Freelancer
 
 **Date:** [11-05-2026]
 **Duration:** ~14 minutes
@@ -8,62 +8,52 @@
 
 ---
 
-Manik is a final year CS student who picks up freelance 
-web projects on the side. He is not running a startup — 
-he is just a guy trying to get work done, paying for 
-AI tools out of his own pocket.
+Manik is a final year CS student doing freelance web 
+work on the side. No startup, no funding — just 
+someone trying to get things done and paying for AI 
+tools from his own pocket.
 
-I caught him between classes and asked what tools he 
-uses. He said "ChatGPT" without hesitating. Then after 
-a second he added "...actually, two ChatGPTs." 
+I asked what tools he uses. He said "ChatGPT." Then 
+paused. "Actually, two ChatGPTs."
 
-That stopped me. I asked him to explain.
-
-Turns out he had two separate ChatGPT Plus accounts — 
-one on his personal email, one on his college email. 
-Every time he hit the message limit mid-session, he 
-would just close one tab and open the other. He also 
-paid for Claude Pro on top of that because he found 
-Claude cleaner for writing and explaining code.
+He had two separate Plus accounts — personal and 
+college email. Whenever he hit the message limit 
+mid-session, he would just switch tabs. He also paid 
+for Claude Pro separately because he trusted it more 
+for writing and code explanations.
 
 Three subscriptions. Sixty dollars a month. College 
-student money.
-
-When I did the math out loud, he leaned back and 
-said "I never looked at it like that."
+student money. When I pointed that out, he just 
+leaned back and said "I never actually thought about 
+it that way."
 
 **Direct Quotes:**
 
-- "Both accounts do the exact same thing. One runs 
-  out, I switch to the other. It just felt like 
-  the easiest fix at the time."
+- "Both accounts do the same thing. One runs out, 
+  I switch. It felt like the easiest fix."
 
-- "Claude is more honest. ChatGPT sometimes acts 
-  confident even when it is completely wrong. 
-  Claude just says it does not know."
+- "Claude is more honest — ChatGPT acts confident 
+  even when it is completely wrong."
 
 - "If someone had shown me this earlier I would 
-  have actually gone and found a better plan."
+  have looked for a better plan."
 
 **Most Surprising Thing He Said:**
 
 He had never heard of the ChatGPT Team plan. When I 
-told him it offered higher limits at $30 per user — 
-meaning he could drop one of his Plus accounts 
-completely — he pulled out his phone on the spot to 
-check. He genuinely believed Plus was the only paid 
-option before Enterprise. That moment stuck with me. 
-The problem is not that people refuse to spend less. 
-It is that they have no idea a better option exists.
+explained it offered higher limits at $30 per user, 
+he pulled out his phone immediately to check. He 
+assumed Plus was the only option before Enterprise. 
+People do not refuse cheaper options — they just 
+do not know those options exist.
 
 **What It Changed In My Design:**
 
-I added plan price hints next to every dropdown in 
-the SpendShift form so users can instantly see if 
-what they are paying matches the listed price. I also 
-made the duplicate tool flag more prominent on the 
-results page — because Manik's situation is probably 
-happening to a lot more people than I assumed.
+I added price hints next to every plan in the form 
+so users immediately see if they are overpaying. I 
+also made the duplicate tool flag more visible on 
+the results page — because Manik's situation is 
+more common than I had assumed.
 
 ---
 
