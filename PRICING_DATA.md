@@ -29,18 +29,18 @@
 - **Enterprise:** $60/user/month — https://openai.com/chatgpt/pricing/ — verified 2026-05-09
 
 ### Anthropic API Direct
-- **Build Tier:** $0/user/month — https://www.anthropic.com/pricing#anthropic-api — verified 2026-05-09
-- **Scale Tier:** $0/user/month — https://www.anthropic.com/pricing#anthropic-api — verified 2026-05-09
-- **Enterprise:** $0/user/month — https://www.anthropic.com/pricing#anthropic-api — verified 2026-05-09
+- **Build Tier:** Usage-based (Pay-as-you-go) — https://www.anthropic.com/pricing#anthropic-api — verified 2026-05-11
+- **Scale Tier:** Usage-based (Custom) — https://www.anthropic.com/pricing#anthropic-api — verified 2026-05-11
+- **Enterprise:** Usage-based (Negotiated) — https://www.anthropic.com/pricing#anthropic-api — verified 2026-05-11
 
 ### OpenAI API Direct
-- **Usage Tier 1:** $0/user/month — https://openai.com/api/pricing/ — verified 2026-05-09
-- **Usage Tier 5:** $0/user/month — https://openai.com/api/pricing/ — verified 2026-05-09
+- **Usage Tier 1:** Usage-based (Pay-as-you-go) — https://openai.com/api/pricing/ — verified 2026-05-11
+- **Usage Tier 5:** Usage-based (High Volume) — https://openai.com/api/pricing/ — verified 2026-05-11
 
 ### Gemini (Google)
 - **Gemini Pro:** $0/user/month — https://gemini.google.com/pricing — verified 2026-05-09
 - **Gemini Ultra:** $19.99/user/month — https://gemini.google.com/pricing — verified 2026-05-09
-- **API:** $0/user/month — https://gemini.google.com/pricing — verified 2026-05-09
+- **API:** Free Tier available (Rate Limited) — https://ai.google.dev/pricing — verified 2026-05-11
 
 ### Windsurf
 - **Free:** $0/user/month — https://codeium.com/pricing — verified 2026-05-09
