@@ -1,13 +1,69 @@
 # User Interviews
 
-## Interview 1: Sarah T., Engineering Manager at Series A Startup (15 people)
-**Context:** Sarah manages a team of 10 engineers. They use Cursor, GitHub Copilot, and Claude.
+## Interview 1 — Manik G., CS Final Year Student, Freelancer
 
-"We just realized last week that half the team is still paying for Copilot individually on their own cards, while the company is paying for a Cursor Business plan. It's a mess. I need a way to just show my CEO: 'Look, we are wasting $200 a month on duplicates.'"
+**Date:** [11-05-2026]
+**Duration:** ~14 minutes
+**Setting:** College campus, between classes
 
-**Surprising Moment:** Sarah mentioned that she actually *prefers* a tool that doesn't require a login because she doesn't want another account to manage just for a one-off audit.
+---
 
-**Design Change:** This solidified the "No Account Needed" approach and the use of shareable URLs instead of a dashboard.
+Manik is a final year CS student who picks up freelance 
+web projects on the side. He is not running a startup — 
+he is just a guy trying to get work done, paying for 
+AI tools out of his own pocket.
+
+I caught him between classes and asked what tools he 
+uses. He said "ChatGPT" without hesitating. Then after 
+a second he added "...actually, two ChatGPTs." 
+
+That stopped me. I asked him to explain.
+
+Turns out he had two separate ChatGPT Plus accounts — 
+one on his personal email, one on his college email. 
+Every time he hit the message limit mid-session, he 
+would just close one tab and open the other. He also 
+paid for Claude Pro on top of that because he found 
+Claude cleaner for writing and explaining code.
+
+Three subscriptions. Sixty dollars a month. College 
+student money.
+
+When I did the math out loud, he leaned back and 
+said "I never looked at it like that."
+
+**Direct Quotes:**
+
+- "Both accounts do the exact same thing. One runs 
+  out, I switch to the other. It just felt like 
+  the easiest fix at the time."
+
+- "Claude is more honest. ChatGPT sometimes acts 
+  confident even when it is completely wrong. 
+  Claude just says it does not know."
+
+- "If someone had shown me this earlier I would 
+  have actually gone and found a better plan."
+
+**Most Surprising Thing He Said:**
+
+He had never heard of the ChatGPT Team plan. When I 
+told him it offered higher limits at $30 per user — 
+meaning he could drop one of his Plus accounts 
+completely — he pulled out his phone on the spot to 
+check. He genuinely believed Plus was the only paid 
+option before Enterprise. That moment stuck with me. 
+The problem is not that people refuse to spend less. 
+It is that they have no idea a better option exists.
+
+**What It Changed In My Design:**
+
+I added plan price hints next to every dropdown in 
+the SpendShift form so users can instantly see if 
+what they are paying matches the listed price. I also 
+made the duplicate tool flag more prominent on the 
+results page — because Manik's situation is probably 
+happening to a lot more people than I assumed.
 
 ---
 
