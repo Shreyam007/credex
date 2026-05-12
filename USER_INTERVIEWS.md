@@ -1,14 +1,14 @@
 # User Interviews
 
-## Interview 1 — Manik S., CS Final Year Student, Freelancer
+## Interview 1 — Manik S., CS Third Year Student, Freelancer
 
-**Date:** [11-05-2026]
+**Date:** 11-05-2026
 **Duration:** ~14 minutes
 **Setting:** College campus, between classes
 
 ---
 
-Manik is a final year CS student doing freelance web 
+Manik is a 3rd year CS student doing freelance web 
 work on the side. No startup, no funding — just 
 someone trying to get things done and paying for AI 
 tools from his own pocket.
