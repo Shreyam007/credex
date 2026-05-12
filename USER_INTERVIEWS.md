@@ -57,14 +57,68 @@ more common than I had assumed.
 
 ---
 
-## Interview 2: Marc K., Founder of a Bootstrapped AI Agency (3 people)
-**Context:** Small, high-velocity team doing heavy writing and coding.
+## Interview 2 — R.K. & A.V., Final Year Seniors, 
+   Student Project Team
 
-"We spend about $600 a month on Claude Pro and ChatGPT Plus seats. For a team our size, it feels like we're being taxed for the UI. I've been curious if just switching to the API direct would save us money, but I don't have the time to do the math on token usage vs seat costs."
+**Date:** 12-05-2025
+**Duration:** ~12 minutes
+**Setting:** College lab, after evening class
 
-**Surprising Moment:** Marc was worried that an "audit" would just tell him to delete his favorite tools. He wanted "constructive" optimization, not just "cutting."
+---
 
-**Design Change:** I added "Reasoning" text to every recommendation that explains *why* a switch is better, rather than just saying "Stop using X."
+Two of my seniors were sitting in the lab when I 
+asked if they would try the tool. They agreed, 
+mostly out of curiosity. Neither of them expected 
+much from it.
+
+R.K. went first. He entered Cursor Pro and ChatGPT 
+Plus for their three-person project team. Within 
+seconds the audit flagged that their team size did 
+not justify the Cursor Business tier they had 
+briefly considered moving to, and that ChatGPT Plus 
+had a Team plan with better limits for just ten 
+dollars more across the whole team.
+
+He stared at the screen for a moment and said 
+"this is actually useful."
+
+A.V. leaned over and started pointing at the 
+per-tool breakdown. She was more interested in the 
+reasoning behind each recommendation than the 
+savings number itself. She kept saying "but why" 
+for each flag — and every card had a one-line 
+answer waiting for her.
+
+**Direct Quotes:**
+
+- "I did not expect it to explain the reasoning. 
+  I thought it would just throw a number at me."
+  — R.K.
+
+- "The breakdown is what makes it trustworthy. 
+  Anyone can say you are overspending. Showing 
+  why is different."
+  — A.V.
+
+- "We would actually share this with our team 
+  before deciding on tools next semester."
+  — R.K.
+
+**Most Surprising Thing They Said:**
+
+They both ignored the big savings number at the top 
+and went straight to the per-tool cards. I had 
+assumed the hero savings figure would be the most 
+compelling part of the page. It was not. The 
+reasoning mattered more to them than the total.
+
+**What It Changed In My Design:**
+
+I made the one-sentence reasoning on each tool card 
+slightly larger and more prominent. The savings 
+number is the hook but the reasoning is what 
+actually builds trust — and trust is what gets 
+someone to enter their email at the bottom.
 
 ---
 
