@@ -11,6 +11,7 @@ import { notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { ArrowRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface Props {
   params: Promise<{ id: string }>;
