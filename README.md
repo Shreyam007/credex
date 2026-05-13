@@ -2,7 +2,7 @@
 
 Most startups are overpaying for AI tools by at least 20%. They have duplicate Cursor seats, hidden GitHub Copilot minimums, and Claude Pro subscriptions they forgot to cancel. SpendShift fixes that.
 
-I built this over 6 days as a lead-gen utility for Credex. It doesn't just "show" you your spend—it audits it using 8 specific rules to find waste and arbitrage opportunities.
+I built this over 5 days as a lead-gen utility for Credex. It doesn't just "show" you your spend—it audits it using 8 specific rules to find waste and arbitrage opportunities.
 
 ## Live Demo
 - **URL:** [https://spendshift-audit.vercel.app/](https://spendshift-audit.vercel.app/)
