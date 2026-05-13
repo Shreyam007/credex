@@ -42,7 +42,21 @@ export default function SummaryBlock({ auditResult, teamSize, primaryUseCase }: 
           if (auditResult.totalMonthlySavings > 0) {
             fallback += `Capturing these savings could return $${annualSavings} to your budget annually.`;
           } else {
-            fallback += `Your current stack reflects strong procurement discipline — continue monitoring as vendor pricing evolves.`;
+            // Check benchmark in fallback logic
+            const getBenchmark = (size: number) => {
+              if (size <= 5) return 85;
+              if (size <= 20) return 67;
+              if (size <= 50) return 54;
+              return 48;
+            };
+            const industryAvg = getBenchmark(teamSize);
+            const spendPerDev = totalSpend / teamSize;
+            
+            if (spendPerDev > industryAvg * 1.1) {
+              fallback += `While your current tool plans are correctly selected, your overall spend per developer is higher than the industry average of $${industryAvg}. Consider consolidating overlapping tools to improve efficiency.`;
+            } else {
+              fallback += `Your current stack reflects strong procurement discipline — continue monitoring as vendor pricing evolves.`;
+            }
           }
           setSummary(fallback);
         }

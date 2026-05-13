@@ -91,7 +91,15 @@ export default async function AuditPage({ params }: Props) {
       <div className="max-w-4xl mx-auto px-6 py-12 space-y-12">
         
         {/* SECTION A: HERO SAVINGS BLOCK */}
-        {!isOptimal ? (
+        {isOptimal ? (
+          <div className="text-center py-16 bg-gradient-to-b from-green-50 to-white rounded-3xl mb-8">
+            <div className="text-6xl text-green-600 mb-4 font-bold">✓</div>
+            <h1 className="text-4xl font-extrabold text-slate-900">You're Spending Well</h1>
+            <p className="text-lg text-slate-500 max-w-md mx-auto mt-3 font-medium">
+              Your AI stack is well-optimized for your team size and use case. We'll alert you when better options appear for your specific setup.
+            </p>
+          </div>
+        ) : result.totalMonthlySavings > 0 ? (
           <div className="text-center py-16 bg-gradient-to-b from-indigo-50 to-white rounded-3xl mb-8">
             <p className="text-xs font-semibold tracking-widest text-indigo-400 uppercase">
               YOUR MONTHLY SAVINGS POTENTIAL
@@ -120,12 +128,23 @@ export default async function AuditPage({ params }: Props) {
             </div>
           </div>
         ) : (
-          <div className="text-center py-16 bg-gradient-to-b from-green-50 to-white rounded-3xl mb-8">
-            <div className="text-6xl text-green-600 mb-4 font-bold">✓</div>
-            <h1 className="text-4xl font-extrabold text-slate-900">You're Spending Well</h1>
-            <p className="text-lg text-slate-500 max-w-md mx-auto mt-3 font-medium">
-              Your AI stack is well-optimized for your team size and use case. We'll alert you when better options appear for your specific setup.
+          /* ABOVE BENCHMARK BUT NO SPECIFIC TOOL SAVINGS FOUND */
+          <div className="text-center py-16 bg-gradient-to-b from-amber-50 to-white rounded-3xl mb-8">
+            <p className="text-xs font-semibold tracking-widest text-amber-500 uppercase">
+              BENCHMARK ALERT
             </p>
+            <h1 className="text-5xl font-extrabold text-slate-900 tracking-tight mt-4">
+              High Per-Seat Spend
+            </h1>
+            <p className="text-xl text-slate-500 font-medium mt-2">
+              Your stack is clean, but you're paying more per dev than average.
+            </p>
+            
+            <div className="flex justify-center mt-6">
+              <span className="bg-amber-500 text-white rounded-full px-4 py-1 text-sm font-semibold">
+                Consolidation Recommended
+              </span>
+            </div>
           </div>
         )}
 
