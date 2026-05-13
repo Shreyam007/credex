@@ -66,7 +66,21 @@ export default async function AuditPage({ params }: Props) {
 
   const result = audit.result_json;
   const input = audit.input_json;
-  const isOptimal = result.savingsTier === 'optimal' || result.totalMonthlySavings < 100;
+  
+  // Benchmark logic for hero message
+  const totalSpend = result.perTool.reduce((acc: number, t: any) => acc + t.currentMonthlySpend, 0);
+  const spendPerDev = Math.round(totalSpend / input.teamSize);
+  const getBenchmark = (size: number) => {
+    if (size <= 5) return 85;
+    if (size <= 20) return 67;
+    if (size <= 50) return 54;
+    return 48;
+  };
+  const industryAvg = getBenchmark(input.teamSize);
+  const isSignificantlyOverBenchmark = spendPerDev > industryAvg * 1.2; // 20% over average
+  
+  // A result is only "optimal" if identified savings are low AND they aren't way over the benchmark
+  const isOptimal = (result.savingsTier === 'optimal' || result.totalMonthlySavings < 100) && !isSignificantlyOverBenchmark;
 
   return (
     <main className="min-h-screen bg-white pb-32">
