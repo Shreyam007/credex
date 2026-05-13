@@ -139,22 +139,43 @@ export function runAudit(input: AuditInput): AuditResult {
     totalMonthlySavings += monthlySavings;
   }
 
-  // BENCHMARK CALCULATION
+  // BENCHMARK CALCULATION (Dynamic based on Use Case)
   const totalSpend = tools.reduce((acc, t) => acc + t.currentMonthlySpend, 0);
   const spendPerDev = totalSpend / teamSize;
-  const getBenchmark = (size: number) => {
-    if (size <= 5) return 85;
-    if (size <= 20) return 67;
-    if (size <= 50) return 54;
-    return 48;
+  
+  const getBenchmark = (size: number, useCase: string) => {
+    let base = 67;
+    if (size <= 5) base = 85;
+    else if (size <= 20) base = 67;
+    else if (size <= 50) base = 54;
+    else base = 48;
+
+    // Adjust based on use case
+    if (useCase === 'coding') return base * 1.3; // Coding tools are more expensive
+    if (useCase === 'data') return base * 1.15;
+    if (useCase === 'mixed') return base;
+    return base * 0.85; // Writing/Research are generally cheaper
   };
-  const industryAvg = getBenchmark(teamSize);
+
+  const industryAvg = Math.round(getBenchmark(teamSize, primaryUseCase));
   const benchmarkDiff = Math.round(((spendPerDev / industryAvg) - 1) * 100);
+
+  // 6. USE CASE FIT (REFINED)
+  for (const res of results) {
+    if (res.recommendedAction === 'keep') {
+      if (primaryUseCase === 'coding' && (res.toolId === 'claude' || res.toolId === 'chatgpt')) {
+        res.reasoning = `Good tool, but ${primaryUseCase} teams often find better ROI in specialized tools like Cursor or GitHub Copilot.`;
+      } else if (primaryUseCase === 'writing' && res.toolId === 'cursor') {
+        res.reasoning = "Cursor is highly specialized for coding; writing teams usually prefer Claude or ChatGPT's prose capabilities.";
+        res.recommendedAction = 'negotiate'; // Flag for review
+      }
+    }
+  }
 
   // Savings Tier
   let savingsTier: AuditResult['savingsTier'] = 'optimal';
-  if (totalMonthlySavings > 2000 || benchmarkDiff > 100) savingsTier = 'high';
-  else if (totalMonthlySavings > 500 || benchmarkDiff > 40) savingsTier = 'medium';
+  if (totalMonthlySavings > 2000 || benchmarkDiff > 80) savingsTier = 'high';
+  else if (totalMonthlySavings > 500 || benchmarkDiff > 30) savingsTier = 'medium';
   else if (totalMonthlySavings > 100 || benchmarkDiff > 10) savingsTier = 'low';
 
   return {

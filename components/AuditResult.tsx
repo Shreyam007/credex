@@ -70,6 +70,11 @@ export default function AuditResult({ result }: { result: any }) {
                         </span>
                       </div>
                     </>
+                  ) : action !== 'keep' ? (
+                    <>
+                      <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-1">Optimization Needed</p>
+                      <p className="text-xl font-bold text-orange-600">Review Fit</p>
+                    </>
                   ) : (
                     <>
                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Optimized ✓</p>

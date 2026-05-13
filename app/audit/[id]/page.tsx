@@ -167,6 +167,7 @@ export default async function AuditPage({ params }: Props) {
         <BenchmarkCard 
           totalMonthlySpend={result.perTool.reduce((acc: number, t: any) => acc + t.currentMonthlySpend, 0)}
           teamSize={input.teamSize}
+          primaryUseCase={input.primaryUseCase}
         />
 
         {/* SECTION B: AI SUMMARY BLOCK */}

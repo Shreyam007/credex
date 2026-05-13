@@ -1,18 +1,25 @@
 /* eslint-disable */
 import React from 'react';
 
-export default function BenchmarkCard({ totalMonthlySpend, teamSize }: { totalMonthlySpend: number, teamSize: number }) {
+export default function BenchmarkCard({ totalMonthlySpend, teamSize, primaryUseCase }: { totalMonthlySpend: number, teamSize: number, primaryUseCase: string }) {
   const spendPerDev = Math.round(totalMonthlySpend / teamSize);
   
-  // Benchmark data
-  const getBenchmark = (size: number) => {
-    if (size <= 5) return 85;
-    if (size <= 20) return 67;
-    if (size <= 50) return 54;
-    return 48;
+  // Benchmark data (Context Aware)
+  const getBenchmark = (size: number, useCase: string) => {
+    let base = 67;
+    if (size <= 5) base = 85;
+    else if (size <= 20) base = 67;
+    else if (size <= 50) base = 54;
+    else base = 48;
+
+    // Adjust based on use case
+    if (useCase === 'coding') return base * 1.3;
+    if (useCase === 'data') return base * 1.15;
+    if (useCase === 'mixed') return base;
+    return base * 0.85;
   };
 
-  const industryAvg = getBenchmark(teamSize);
+  const industryAvg = Math.round(getBenchmark(teamSize, primaryUseCase));
   const isAboveAvg = spendPerDev > industryAvg;
   const diffPercent = Math.round(Math.abs((spendPerDev / industryAvg - 1) * 100));
 
