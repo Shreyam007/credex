@@ -1,33 +1,49 @@
-# Unit Economics & $1M ARR Model
+# Napkin Math: The Economics of SpendShift
 
-### Lead Value Estimate for Credex
-Credex operates as a procurement-as-a-service platform, primarily generating revenue through a "success fee" model based on realized savings. For SpendShift, a "Lead" is defined as a user who completes an audit and submits their contact information.
+I wanted to see if this tool actually makes sense as a business. It’s fun to build, but if it doesn't move the needle for Credex, it’s just a toy. I did some "working backwards" math to figure out what a lead is actually worth and how we get to $1M in revenue.
 
-- **Avg. Identified Savings per Audit:** $4,800/year (based on typical 20% waste on a $2k/mo AI spend).
-- **Credex Realizable Savings:** By layering infrastructure credits (AWS/GCP/OpenAI), Credex can typically double these savings to $9,600/year.
-- **Credex Success Fee:** 25% of first-year savings = $2,400 per closed deal.
-- **Funnel Conversion (Audit -> Lead):** 12% (Optimized via AI summary hook).
-- **Funnel Conversion (Lead -> Consult):** 40% (Direct outreach from Credex).
-- **Funnel Conversion (Consult -> Closed):** 15% (High intent due to data-backed audit).
-- **Blended Closed Rate (Lead -> Closed):** 6%.
-- **Lead Value (LV):** $2,400 (Fee) * 0.06 (Conv) = **$144 per lead.**
+### What is a Lead actually worth?
 
-### CAC Targets and Funnel Efficiency
-Given the high Lead Value ($144), we can afford a relatively high Customer Acquisition Cost (CAC) compared to standard B2C tools, while still maintaining a healthy LTV/CAC ratio.
+I'm making some assumptions here since I don't have Credex's internal books, but let’s look at the logic. Credex usually makes money by taking a cut of the savings they find for a company—let’s call it a 25% "success fee."
 
-- **Max CAC per Audit:** $5.00 (Assuming 12% lead rate, this results in a $41 CAC per lead).
-- **LTV/CAC Ratio:** $144 / $41 = **3.5x**. This is highly sustainable for a lead-gen utility.
+1.  **The Saving:** A typical startup spending $2,500/mo on AI probably has at least 20% waste. That’s $500/mo or $6,000/year.
+2.  **The Upside:** Credex doesn't just cut seats; they bring in AWS or OpenAI credits. They can usually double those savings to around $12,000/year.
+3.  **The Fee:** 25% of $12k is **$3,000 per closed deal.**
 
-### $1M ARR Growth Model
-To reach $1M in annual revenue, Credex needs to close approximately 417 deals per year ($1,000,000 / $2,400).
+Now, let's look at the funnel. Not everyone who runs an audit will buy.
+- **Audit → Email Capture:** 12% (I'm being conservative here).
+- **Email → Consultation Call:** 30% (People who saw $5k in savings are usually curious).
+- **Call → Closed Deal:** 20%.
 
-**The Math to $1M:**
-1.  **Closed Deals:** 417/year (~35/month).
-2.  **Qualified Leads Needed:** 6,950/year (~580/month).
-3.  **Audits Completed Needed:** 58,000/year (~4,800/month or ~160/day).
+If you multiply that out (0.12 * 0.30 * 0.20), you get about a 0.72% conversion rate from "Finished Audit" to "Money in Bank."
+So, $3,000 * 0.0072 = **$21.60 per audit completed.**
 
-**Sensitivity Analysis:**
-If we increase the lead conversion rate from 12% to 18% through "Benchmark FOMO" (showing the user they are in the bottom 20% of spenders), the required daily audit volume drops to 105/day. This highlights the importance of the **Benchmark Card** as a conversion driver rather than just a feature.
+If I can get someone to finish an audit for less than $21, this is a money-printing machine.
 
-### Scalability and Margin
-Since SpendShift is an automated utility, the marginal cost of running an additional 100 audits is negligible (primarily token costs for Claude Haiku, estimated at <$0.01 per summary). The primary cost center is the human consultation step for Credex. By automating the "Pre-Consultation" data collection via the audit input, we significantly reduce the time-to-close, allowing a single Credex advisor to handle 5x more volume than traditional cold outreach.
+### CAC (Customer Acquisition Cost) by Channel
+
+Since we know an audit is worth about $21 to us, we can plan our spending:
+
+- **LinkedIn Ads:** Probably $10-15 per audit. It’s expensive, but the intent is high.
+- **Community (Reddit/Slack):** $0 per audit (just my time). This is high-reward but hard to scale.
+- **SEO/Content:** Maybe $2 per audit once the blog posts start ranking for things like "Claude vs ChatGPT pricing."
+
+Even at the high end ($15), we’re still making a $6 profit per audit. That’s a healthy 1.4x return on ad spend just on the *first* deal.
+
+### The Road to $1M ARR
+
+To hit $1M in annual revenue, we need to close about 333 deals a year ($1,000,000 / $3,000 per deal). That’s roughly 28 deals a month.
+
+**The Step-by-Step Roadmap:**
+1.  **Close 28 deals/month.**
+2.  **Take 140 consultation calls/month** (assuming a 20% close rate).
+3.  **Generate 466 leads/month** (assuming 30% book a call).
+4.  **Run 3,800 audits/month** (assuming 12% drop their email).
+
+3,800 audits a month sounds like a lot, but it’s only **126 audits a day.** For a global tool, that is actually a very achievable number. If one "viral" post on Hacker News can bring in 2,000 audits in a weekend, we’re already halfway to our monthly goal.
+
+### Why this is better than cold calling
+
+The real "secret" economics here is the efficiency. Normally, a Credex salesperson has to spend 40 minutes on a "discovery call" just to find out what tools a company uses. With SpendShift, the salesperson *starts* the call with a PDF of the user's actual spend data. 
+
+We’re basically cutting the sales cycle in half. That means one person at Credex can handle twice as many clients, which doubles the margin on every deal. That’s the real win.
