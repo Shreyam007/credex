@@ -89,19 +89,44 @@ export default async function AuditPage({ params }: Props) {
             </p>
           </div>
         ) : result.totalMonthlySavings > 0 ? (
-          <div className="text-center py-16 bg-gradient-to-b from-indigo-50 to-white rounded-3xl mb-8">
-            <p className="text-xs font-semibold tracking-widest text-indigo-400 uppercase">
-              YOUR MONTHLY SAVINGS POTENTIAL
+          <div className={cn(
+            "text-center py-16 rounded-3xl mb-8 border",
+            benchmarkDiff > 100 ? "bg-gradient-to-b from-red-50 to-white border-red-100" : 
+            benchmarkDiff > 50 ? "bg-gradient-to-b from-orange-50 to-white border-orange-100" : 
+            "bg-gradient-to-b from-indigo-50 to-white border-indigo-100"
+          )}>
+            <p className={cn(
+              "text-xs font-semibold tracking-widest uppercase",
+              benchmarkDiff > 100 ? "text-red-500" : 
+              benchmarkDiff > 50 ? "text-orange-500" : 
+              "text-indigo-400"
+            )}>
+              {benchmarkDiff > 80 ? "Urgent Savings Opportunity" : "Your Monthly Savings Potential"}
             </p>
-            <h1 className="text-7xl font-extrabold text-[#4F46E5] tracking-tight mt-4">
+            <h1 className={cn(
+              "text-7xl font-extrabold tracking-tight mt-4",
+              benchmarkDiff > 100 ? "text-red-600" : 
+              benchmarkDiff > 50 ? "text-orange-600" : 
+              "text-[#4F46E5]"
+            )}>
               ${result.totalMonthlySavings.toLocaleString()} / month
             </h1>
             <p className="text-xl text-slate-500 font-medium mt-2">
               That's ${result.totalAnnualSavings.toLocaleString()} saved every year
             </p>
             
+            {benchmarkDiff > 50 && (
+              <p className="text-sm font-bold text-red-500/80 mt-4 max-w-md mx-auto">
+                ⚠️ Critical Alert: Your per-seat spend is {benchmarkDiff}% above industry average.
+              </p>
+            )}
+            
             <div className="flex justify-center mt-6">
-              {result.totalMonthlySavings > 1000 ? (
+              {benchmarkDiff > 100 ? (
+                <span className="bg-red-600 text-white rounded-full px-4 py-1 text-sm font-semibold shadow-lg shadow-red-100">
+                  Critical Waste Found
+                </span>
+              ) : result.totalMonthlySavings > 1000 ? (
                 <span className="bg-red-500 text-white rounded-full px-4 py-1 text-sm font-semibold">
                   High Savings Opportunity
                 </span>
