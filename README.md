@@ -1,37 +1,35 @@
-# SpendShift: AI Spend Audit Tool
+# SpendShift: The 2-Minute AI Spend Auditor
 
-SpendShift is a high-conversion, production-ready web application designed to help startups and engineering teams optimize their AI tool spend. It provides instant, finance-literate audits of tools like Cursor, GitHub Copilot, Claude, and more.
+Most startups are overpaying for AI tools by at least 20%. They have duplicate Cursor seats, hidden GitHub Copilot minimums, and Claude Pro subscriptions they forgot to cancel. SpendShift fixes that.
 
-## Quick Start
+I built this over 6 days as a lead-gen utility for Credex. It doesn't just "show" you your spend—it audits it using 8 specific rules to find waste and arbitrage opportunities.
 
-1.  **Clone the repo**
-2.  **Install dependencies:** `npm install`
-3.  **Setup environment:** Copy `.env.example` to `.env.local` and fill in the keys.
-4.  **Run migrations:** Execute `schema.sql` in your Supabase SQL Editor.
-5.  **Start development:** `npm run dev`
-6.  **Run tests:** `npm run test`
+## Live Demo
+- **URL:** [https://spendshift-audit.vercel.app/](https://spendshift-audit.vercel.app/)
+- **Guide:** [How it Works](https://spendshift-audit.vercel.app/how-it-works)
 
-## Key Features
+## Quick Start (For Devs)
 
-- **Multi-step Audit Engine:** 8 proprietary rules to identify waste, redundancy, and arbitrage opportunities.
-- **AI Summary Generation:** Personalized summaries using Anthropic's Claude 3 Haiku.
-- **Lead Capture:** Seamlessly collect leads with transactional email confirmations via Resend.
-- **Shareable Reports:** Publicly accessible, SEO-optimized audit results.
+1.  **Install dependencies:** `npm install`
+2.  **Setup environment:** Copy `.env.example` to `.env.local` (you'll need keys for Anthropic, Resend, and Supabase).
+3.  **Run migrations:** I've included a `schema.sql` file you can paste directly into the Supabase SQL Editor.
+4.  **Launch:** `npm run dev`
+5.  **Test:** `npm run test` (All 8 core engine tests should pass).
 
-## Trade-off Decisions
+## Why I built it this way
 
-1.  **Stateless Audit Logic:** Chose to keep audit rules purely functional in `auditEngine.ts` rather than DB-driven. This enables rapid unit testing and zero-latency results, accepting that rule updates require a redeploy.
-2.  **In-Memory Rate Limiting:** Implemented a Map-based limiter for the lead capture API to maintain zero external dependencies (like Redis) during the MVP phase, prioritizing simplicity and deployment speed.
-3.  **Model Selection (Haiku):** Opted for Claude 3 Haiku for summary generation. The ultra-low latency was prioritized over the higher reasoning of Sonnet/Opus, as the input data is already structured and highly predictable.
-4.  **Optimistic Client Recalculations:** The SpendForm recalculates estimated spend in real-time as users type. This creates a highly responsive "calculator" experience that increases conversion compared to a static form.
-5.  **Fixed-Bucket Benchmarking:** Used hardcoded industry spend averages based on team size cohorts rather than live global averages. This provides instant psychological "anchoring" for the user without the overhead of a large data science pipeline.
+- **Stateless Audit Logic:** I kept the audit rules in `auditEngine.ts` instead of a database. It makes the app feel instant and the testing way easier.
+- **Claude 3 Haiku:** I chose Haiku because it’s fast and cheap. For a 100-word summary, you don't need a massive model.
+- **SSR for Social Sharing:** I used Next.js Server-Side Rendering for the result pages. This means if you share your audit link, the preview actually shows your potential savings.
+- **Optimistic Recalculations:** The form updates your "Estimated Spend" as you type. It feels more like a calculator than a boring form, which helps with conversion.
 
-## Deployed URL
-Live Demo: [https://spendshift.vercel.app](https://spendshift.vercel.app)
+## Screenshots
+![SpendShift Form](/public/screenshots/step1-form-final.png)
+*The multi-step audit form with real-time recalculations.*
 
-## Screenshots / Demo
-![SpendShift Hero](/public/screenshots/step1-form-final.png)
-*Figure 1: High-fidelity audit input form with real-time recalculations.*
-
-[View the full "How It Works" guide](https://spendshift.vercel.app/how-it-works)
-
+## Documentation
+Check out the full documentation for the deep-dive:
+- [Architecture & Scaling](ARCHITECTURE.md)
+- [Reflection & Bugs](REFLECTION.md)
+- [GTM Strategy](GTM.md)
+- [User Interviews](USER_INTERVIEWS.md)
