@@ -328,7 +328,7 @@ export default function SpendForm() {
 
             <div className="space-y-3">
               {formData.tools.map(t => (
-                <div key={t.toolId} className="flex justify-between items-center p-4 rounded-xl border border-slate-100 bg-white gap-4">
+                <div key={t.toolId} className="flex justify-between items-center p-4 rounded-xl border border-slate-100 bg-white gap-4 text-left">
                   <div className="min-w-0 flex-1">
                     <p className="font-bold text-slate-900 text-sm truncate">{PRICING_DATA[t.toolId].toolName}</p>
                     <p className="text-xs font-medium text-slate-500 truncate">{t.seats} seats · {PRICING_DATA[t.toolId].plans[t.planId].planName}</p>
