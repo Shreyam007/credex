@@ -144,17 +144,20 @@ export function runAudit(input: AuditInput): AuditResult {
   const spendPerDev = totalSpend / teamSize;
   
   const getBenchmark = (size: number, useCase: string) => {
-    let base = 67;
-    if (size <= 5) base = 85;
-    else if (size <= 20) base = 67;
-    else if (size <= 50) base = 54;
-    else base = 48;
+    // Realistic base spend per dev based on a continuous curve rather than flat tiers
+    // Formula: 100 - (size^0.4) * 8
+    let base = Math.max(45, 105 - Math.pow(size, 0.45) * 8.5);
 
-    // Adjust based on use case
-    if (useCase === 'coding') return base * 1.3; // Coding tools are more expensive
-    if (useCase === 'data') return base * 1.15;
-    if (useCase === 'mixed') return base;
-    return base * 0.85; // Writing/Research are generally cheaper
+    // Context Multipliers
+    const multipliers: Record<string, number> = {
+      'coding': 1.45,   // Heavy use of Cursor, Copilot, and large context APIs
+      'data': 1.25,     // High usage of Gemini 1.5 Pro and specialized data agents
+      'research': 1.10, // Perplexity and Claude intensive
+      'mixed': 1.0,     // General purpose
+      'writing': 0.80   // Mostly chat-based, lower token usage
+    };
+
+    return base * (multipliers[useCase] || 1.0);
   };
 
   const industryAvg = Math.round(getBenchmark(teamSize, primaryUseCase));

@@ -4,19 +4,19 @@ import React from 'react';
 export default function BenchmarkCard({ totalMonthlySpend, teamSize, primaryUseCase }: { totalMonthlySpend: number, teamSize: number, primaryUseCase: string }) {
   const spendPerDev = Math.round(totalMonthlySpend / teamSize);
   
-  // Benchmark data (Context Aware)
+  // Benchmark data (Context Aware & Granular)
   const getBenchmark = (size: number, useCase: string) => {
-    let base = 67;
-    if (size <= 5) base = 85;
-    else if (size <= 20) base = 67;
-    else if (size <= 50) base = 54;
-    else base = 48;
+    let base = Math.max(45, 105 - Math.pow(size, 0.45) * 8.5);
 
-    // Adjust based on use case
-    if (useCase === 'coding') return base * 1.3;
-    if (useCase === 'data') return base * 1.15;
-    if (useCase === 'mixed') return base;
-    return base * 0.85;
+    const multipliers: Record<string, number> = {
+      'coding': 1.45,
+      'data': 1.25,
+      'research': 1.10,
+      'mixed': 1.0,
+      'writing': 0.80
+    };
+
+    return base * (multipliers[useCase] || 1.0);
   };
 
   const industryAvg = Math.round(getBenchmark(teamSize, primaryUseCase));
