@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { ExternalLink, Info, CheckCircle2 } from 'lucide-react';

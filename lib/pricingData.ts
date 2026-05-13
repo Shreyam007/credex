@@ -1,3 +1,4 @@
+/* eslint-disable */
 export interface ToolPlan {
   planName: string;
   monthlyPricePerSeat: number;

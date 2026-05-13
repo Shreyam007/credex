@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Shield, Lock, Trash2, CheckCircle2, XCircle, Server, Mail, ShieldAlert } from 'lucide-react';

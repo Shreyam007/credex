@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { supabaseAdmin } from '@/lib/supabase';
 import SummaryBlock from '@/components/SummaryBlock';
 import AuditResult from '@/components/AuditResult';

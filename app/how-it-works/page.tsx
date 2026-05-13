@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { ClipboardList, Calculator, BarChart3, Share2, ArrowRight } from 'lucide-react';

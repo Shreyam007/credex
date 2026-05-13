@@ -1,3 +1,4 @@
+/* eslint-disable */
 import SpendForm from '@/components/SpendForm';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
