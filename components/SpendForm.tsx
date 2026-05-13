@@ -328,12 +328,12 @@ export default function SpendForm() {
 
             <div className="space-y-3">
               {formData.tools.map(t => (
-                <div key={t.toolId} className="flex justify-between items-center p-4 rounded-xl border border-slate-100 bg-white">
-                  <div>
-                    <p className="font-bold text-slate-900 text-sm">{PRICING_DATA[t.toolId].toolName}</p>
-                    <p className="text-xs font-medium text-slate-500">{t.seats} seats · {PRICING_DATA[t.toolId].plans[t.planId].planName}</p>
+                <div key={t.toolId} className="flex justify-between items-center p-4 rounded-xl border border-slate-100 bg-white gap-4">
+                  <div className="min-w-0 flex-1">
+                    <p className="font-bold text-slate-900 text-sm truncate">{PRICING_DATA[t.toolId].toolName}</p>
+                    <p className="text-xs font-medium text-slate-500 truncate">{t.seats} seats · {PRICING_DATA[t.toolId].plans[t.planId].planName}</p>
                   </div>
-                  <p className="text-base font-bold text-slate-900">${t.currentMonthlySpend}</p>
+                  <p className="text-base font-bold text-slate-900 whitespace-nowrap">${t.currentMonthlySpend.toLocaleString()}</p>
                 </div>
               ))}
               <div className="flex justify-between items-center p-6 rounded-2xl bg-slate-900 text-white shadow-xl mt-6">
