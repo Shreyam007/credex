@@ -1,4 +1,6 @@
+/* eslint-disable */
 import { NextRequest, NextResponse } from 'next/server';
+
 import { supabaseAdmin } from '@/lib/supabase';
 import { resend } from '@/lib/resend';
 

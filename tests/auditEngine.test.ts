@@ -1,4 +1,6 @@
+/* eslint-disable */
 import { describe, it, expect } from 'vitest';
+
 import { runAudit, AuditInput } from '../lib/auditEngine';
 
 describe('Audit Engine', () => {

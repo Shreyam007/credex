@@ -48,7 +48,7 @@ export default function SpendForm() {
   const handleToolToggle = (toolId: string) => {
     setFormData(prev => {
       const isSelected = prev.selectedTools.includes(toolId);
-      let newSelected = isSelected 
+      const newSelected = isSelected 
         ? prev.selectedTools.filter(id => id !== toolId)
         : [...prev.selectedTools, toolId];
       
