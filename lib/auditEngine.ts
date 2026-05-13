@@ -82,6 +82,20 @@ export function runAudit(input: AuditInput): AuditResult {
       reasoning = `You are paying for the ${currentPlan.minSeats}-seat minimum but only using ${userTool.seats} seats. Negotiate or switch to Individual plans.`;
     }
 
+    // 2b. PLAN MISMATCH (Downgrade individual users on team plans)
+    if (userTool.seats <= 2 && (userTool.planId === 'team' || userTool.planId === 'business') && recommendedAction === 'keep') {
+      const proPlan = Object.entries(pricing.plans).find(([id, p]) => id === 'pro' || id === 'individual');
+      if (proPlan) {
+        const potentialSavings = (currentPlan.monthlyPricePerSeat - proPlan[1].monthlyPricePerSeat) * userTool.seats;
+        if (potentialSavings > 0) {
+          monthlySavings = potentialSavings;
+          recommendedAction = 'downgrade';
+          recommendedPlan = proPlan[0];
+          reasoning = `${currentPlan.planName} requires more seats than you have. Downgrading to ${proPlan[1].planName} saves $${potentialSavings}/mo.`;
+        }
+      }
+    }
+
     // 3. CROSS-TOOL REDUNDANCY (The "Consolidation" Logic)
     for (const [category, toolList] of Object.entries(CATEGORIES)) {
       if (toolList.includes(userTool.toolId)) {
@@ -106,7 +120,7 @@ export function runAudit(input: AuditInput): AuditResult {
     }
 
     // 4. API vs SUBSCRIPTION ARBITRAGE (For very small teams)
-    if (teamSize <= 3 && isCodingTeam && !userTool.toolId.includes('api') && recommendedAction === 'keep') {
+    if (teamSize <= 3 && isCodingTeam && !userTool.toolId.includes('api')) {
       const apiCostEstimate = 8; // Avg monthly API cost for light team use
       const currentCostPerSeat = userTool.currentMonthlySpend / userTool.seats;
       if (currentCostPerSeat > 25) { // If paying >$25/seat, API is much cheaper
@@ -120,7 +134,18 @@ export function runAudit(input: AuditInput): AuditResult {
       }
     }
 
-    // 5. USE CASE FIT
+    // 5. OVERPAYING FOR UNUSED TIERS
+    const expectedSpend = currentPlan.monthlyPricePerSeat * userTool.seats;
+    if (userTool.currentMonthlySpend > expectedSpend * 1.15) {
+      const waste = userTool.currentMonthlySpend - expectedSpend;
+      if (waste > monthlySavings) {
+        monthlySavings = waste;
+        recommendedAction = 'negotiate';
+        reasoning = `Your spend is ${Math.round((userTool.currentMonthlySpend / expectedSpend - 1) * 100)}% higher than the listed price. You may be on an upsold tier.`;
+      }
+    }
+
+    // 6. USE CASE FIT
     if (primaryUseCase === 'coding' && userTool.toolId === 'claude' && !toolIds.has('cursor') && recommendedAction === 'keep') {
       reasoning = 'Excellent tool, but for coding-specific teams, Cursor or Copilot often provide higher direct ROI for the same price.';
     }
