@@ -67,20 +67,9 @@ export default async function AuditPage({ params }: Props) {
   const result = audit.result_json;
   const input = audit.input_json;
   
-  // Benchmark logic for hero message
-  const totalSpend = result.perTool.reduce((acc: number, t: any) => acc + t.currentMonthlySpend, 0);
-  const spendPerDev = Math.round(totalSpend / input.teamSize);
-  const getBenchmark = (size: number) => {
-    if (size <= 5) return 85;
-    if (size <= 20) return 67;
-    if (size <= 50) return 54;
-    return 48;
-  };
-  const industryAvg = getBenchmark(input.teamSize);
-  const isSignificantlyOverBenchmark = spendPerDev > industryAvg * 1.2; // 20% over average
-  
-  // A result is only "optimal" if identified savings are low AND they aren't way over the benchmark
-  const isOptimal = (result.savingsTier === 'optimal' || result.totalMonthlySavings < 100) && !isSignificantlyOverBenchmark;
+  // Use the benchmark info directly from the engine
+  const benchmarkDiff = result.benchmarkDiff || 0;
+  const isOptimal = (result.savingsTier === 'optimal' || result.totalMonthlySavings < 100) && benchmarkDiff < 20;
 
   return (
     <main className="min-h-screen bg-white pb-32">
@@ -112,17 +101,17 @@ export default async function AuditPage({ params }: Props) {
             </p>
             
             <div className="flex justify-center mt-6">
-              {result.totalMonthlySavings > 2000 ? (
+              {result.totalMonthlySavings > 1000 ? (
                 <span className="bg-red-500 text-white rounded-full px-4 py-1 text-sm font-semibold">
                   High Savings Opportunity
                 </span>
-              ) : result.totalMonthlySavings > 500 ? (
+              ) : result.totalMonthlySavings > 300 ? (
                 <span className="bg-orange-500 text-white rounded-full px-4 py-1 text-sm font-semibold">
                   Significant Savings Found
                 </span>
               ) : (
                 <span className="bg-yellow-400 text-slate-900 rounded-full px-4 py-1 text-sm font-semibold">
-                  Moderate Savings Found
+                  Consolidation Opportunity
                 </span>
               )}
             </div>
@@ -137,12 +126,12 @@ export default async function AuditPage({ params }: Props) {
               High Per-Seat Spend
             </h1>
             <p className="text-xl text-slate-500 font-medium mt-2">
-              Your stack is clean, but you're paying more per dev than average.
+              Your tool-specific plans are fine, but your overall stack is ${benchmarkDiff}% over budget.
             </p>
             
             <div className="flex justify-center mt-6">
               <span className="bg-amber-500 text-white rounded-full px-4 py-1 text-sm font-semibold">
-                Consolidation Recommended
+                Optimization Recommended
               </span>
             </div>
           </div>
